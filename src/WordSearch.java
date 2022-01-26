@@ -12,26 +12,43 @@ public class WordSearch{
             System.out.println(words.get(i));
         }
     }
-    public static void printMatrix(String[][] matrix, ArrayList<String> toPrint, int comparison){
+    public static void updateProgress(ArrayList<String> toPrint, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison, 
+                                    ArrayList<Integer> toDelete, int i, int comparison){
+        ArrayList<String> temp = new ArrayList<>(toPrint);
+        finalPrint.add(temp);
+        finalComparison.add(comparison);
+        toDelete.add(i);
+    }
+    public static void addCoordinate(ArrayList<String> toPrint, int x, int y){
+        String temp = String.valueOf(x) + "," + String.valueOf(y);
+        toPrint.add(temp);
+    }
+    public static void printMatrix(String[][] matrix, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         int matrixRow = matrix.length, matrixCol = matrix[0].length;
-        for (int m = 0; m < matrixRow; m++){
-            for (int n = 0; n < matrixCol; n++){
-                String temp = String.valueOf(m) + "," + String.valueOf(n);
-                if (toPrint.contains(temp)){
-                    System.out.print(matrix[m][n]);
+        int i = 0, tot = 0;
+        for (ArrayList<String> toPrint : finalPrint){
+            for (int m = 0; m < matrixRow; m++){
+                for (int n = 0; n < matrixCol; n++){
+                    String temp = String.valueOf(m) + "," + String.valueOf(n);
+                    if (toPrint.contains(temp)){
+                        System.out.print(matrix[m][n]);
+                    }
+                    else{
+                        System.out.print("-");
+                    }
+                    System.out.print(" ");
                 }
-                else{
-                    System.out.print("-");
-                }
-                System.out.print(" ");
+                System.out.println();
             }
+            System.out.println("Total Comparison: " + (finalComparison.get(i)).intValue());
+            tot += (finalComparison.get(i)).intValue();
             System.out.println();
+            i++;
         }
-        System.out.println("Total Comparison: " + comparison);
-        System.out.println();
+        System.out.println("Total Comparison of All Words: " + tot);
     }
 
-    public static void searchUp(String[][] matrix, ArrayList<char[]> words){
+    public static void searchUp(String[][] matrix, ArrayList<char[]> words, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         ArrayList<Integer> toDelete = new ArrayList<>();
         ArrayList<String> toPrint = new ArrayList<String>();
         int matrixRow = matrix.length, matrixCol = matrix[0].length, comparison = 0;
@@ -45,8 +62,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(k) + "," + String.valueOf(j);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, k, j);
                         wordCheck++;
                     }
                     else{
@@ -57,17 +73,15 @@ public class WordSearch{
                             comparison++;
                             if (matrix[k][j].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(j) + "," + String.valueOf(k);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, k, j);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = -1;
                         k = -1;
-                        toDelete.add(i);
                     }
                 }
                 wordCheck = 0;
@@ -80,7 +94,7 @@ public class WordSearch{
         }
         return;
     }
-    public static void searchDown(String[][] matrix, ArrayList<char[]> words){
+    public static void searchDown(String[][] matrix, ArrayList<char[]> words, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         ArrayList<Integer> toDelete = new ArrayList<>();
         ArrayList<String> toPrint = new ArrayList<String>();
         int matrixRow = matrix.length, matrixCol = matrix[0].length, comparison = 0;
@@ -94,8 +108,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(k) + "," + String.valueOf(j);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, k, j);
                         wordCheck++;
                     }
                     else{
@@ -106,17 +119,15 @@ public class WordSearch{
                             comparison++;
                             if (matrix[k][j].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(k) + "," + String.valueOf(j);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, k, j);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = matrixCol;
                         k = matrixRow;
-                        toDelete.add(i);
                     }
                 }
                 wordCheck = 0;
@@ -129,7 +140,7 @@ public class WordSearch{
         }
         return;
     }
-    public static void searchLeft(String[][] matrix, ArrayList<char[]> words){
+    public static void searchLeft(String[][] matrix, ArrayList<char[]> words, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         ArrayList<Integer> toDelete = new ArrayList<>();
         ArrayList<String> toPrint = new ArrayList<String>();
         int matrixRow = matrix.length, matrixCol = matrix[0].length, comparison = 0;
@@ -143,8 +154,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(j) + "," + String.valueOf(k);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, j, k);
                         wordCheck++;
                     }
                     else{
@@ -155,17 +165,15 @@ public class WordSearch{
                             comparison++;
                             if (matrix[j][k].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(j) + "," + String.valueOf(k);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, j, k);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = -1;
                         k = -1;
-                        toDelete.add(i);
                     }
                 }
                 wordCheck = 0;
@@ -178,7 +186,7 @@ public class WordSearch{
         }
         return;
     }
-    public static void searchRight(String[][] matrix, ArrayList<char[]> words){
+    public static void searchRight(String[][] matrix, ArrayList<char[]> words, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         ArrayList<Integer> toDelete = new ArrayList<>();
         ArrayList<String> toPrint = new ArrayList<String>();
         int matrixRow = matrix.length, matrixCol = matrix[0].length, comparison = 0;
@@ -192,8 +200,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(j) + "," + String.valueOf(k);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, j, k);
                         wordCheck++;
                     }
                     else{
@@ -204,17 +211,15 @@ public class WordSearch{
                             comparison++;
                             if (matrix[j][k].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(j) + "," + String.valueOf(k);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, j, k);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = matrixRow;
                         k = matrixCol;
-                        toDelete.add(i);
                     }
                 }
                 wordCheck = 0;
@@ -228,7 +233,7 @@ public class WordSearch{
         return;
     }
     
-    public static void searchDiagUpLeft(String[][] matrix, ArrayList<char[]> words){
+    public static void searchDiagUpLeft(String[][] matrix, ArrayList<char[]> words, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         ArrayList<Integer> toDelete = new ArrayList<>();
         ArrayList<String> toPrint = new ArrayList<String>();
         int matrixRow = matrix.length, matrixCol = matrix[0].length, comparison = 0;
@@ -244,8 +249,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(row) + "," + String.valueOf(col);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, row, col);
                         wordCheck++;
                     }
                     else{
@@ -256,15 +260,13 @@ public class WordSearch{
                             comparison++;
                             if (matrix[row][col].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(row) + "," + String.valueOf(col);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, row, col);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
-                        toDelete.add(i);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = matrixCol;
                         break;
                     }
@@ -284,8 +286,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(row) + "," + String.valueOf(col);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, row, col);
                         wordCheck++;
                     }
                     else{
@@ -296,15 +297,13 @@ public class WordSearch{
                             comparison++;
                             if (matrix[row][col].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(row) + "," + String.valueOf(col);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, row, col);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
-                        toDelete.add(i);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = matrixCol;
                         break;
                     }
@@ -321,7 +320,7 @@ public class WordSearch{
         }
         return;
     }
-    public static void searchDiagUpRight(String[][] matrix, ArrayList<char[]> words){
+    public static void searchDiagUpRight(String[][] matrix, ArrayList<char[]> words, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         ArrayList<Integer> toDelete = new ArrayList<>();
         ArrayList<String> toPrint = new ArrayList<String>();
         int matrixRow = matrix.length, matrixCol = matrix[0].length, comparison = 0;
@@ -337,8 +336,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(row) + "," + String.valueOf(col);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, row, col);
                         wordCheck++;
                     }
                     else{
@@ -349,15 +347,13 @@ public class WordSearch{
                             comparison++;
                             if (matrix[row][col].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(row) + "," + String.valueOf(col);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, row, col);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
-                        toDelete.add(i);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = -1;
                         break;
                     }
@@ -377,8 +373,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(row) + "," + String.valueOf(col);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, row, col);
                         wordCheck++;
                     }
                     else{
@@ -389,15 +384,13 @@ public class WordSearch{
                             comparison++;
                             if (matrix[row][col].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(row) + "," + String.valueOf(col);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, row, col);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
-                        toDelete.add(i);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = -1;
                         break;
                     }
@@ -414,7 +407,7 @@ public class WordSearch{
         }
         return;
     }
-    public static void searchDiagDownLeft(String[][] matrix, ArrayList<char[]> words){
+    public static void searchDiagDownLeft(String[][] matrix, ArrayList<char[]> words, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         ArrayList<Integer> toDelete = new ArrayList<>();
         ArrayList<String> toPrint = new ArrayList<String>();
         int matrixRow = matrix.length, matrixCol = matrix[0].length, comparison = 0;
@@ -430,8 +423,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(row) + "," + String.valueOf(col);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, row, col);
                         wordCheck++;
                     }
                     else{
@@ -442,15 +434,13 @@ public class WordSearch{
                             comparison++;
                             if (matrix[row][col].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(row) + "," + String.valueOf(col);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, row, col);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
-                        toDelete.add(i);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = -1;
                         break;
                     }
@@ -470,8 +460,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(row) + "," + String.valueOf(col);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, row, col);
                         wordCheck++;
                     }
                     else{
@@ -482,15 +471,13 @@ public class WordSearch{
                             comparison++;
                             if (matrix[row][col].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(row) + "," + String.valueOf(col);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, row, col);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
-                        toDelete.add(i);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = -1;
                         break;
                     }
@@ -507,7 +494,7 @@ public class WordSearch{
         }
         return;
     }
-    public static void searchDiagDownRight(String[][] matrix, ArrayList<char[]> words){
+    public static void searchDiagDownRight(String[][] matrix, ArrayList<char[]> words, ArrayList<ArrayList<String>> finalPrint, ArrayList<Integer> finalComparison){
         ArrayList<Integer> toDelete = new ArrayList<>();
         ArrayList<String> toPrint = new ArrayList<String>();
         int matrixRow = matrix.length, matrixCol = matrix[0].length, comparison = 0;
@@ -523,8 +510,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(row) + "," + String.valueOf(col);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, row, col);
                         wordCheck++;
                     }
                     else{
@@ -535,15 +521,13 @@ public class WordSearch{
                             comparison++;
                             if (matrix[row][col].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(row) + "," + String.valueOf(col);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, row, col);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
-                        toDelete.add(i);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = -1;
                         break;
                     }
@@ -563,8 +547,7 @@ public class WordSearch{
                         if (diff == true){
                             diff = false;
                         }
-                        String temp = String.valueOf(row) + "," + String.valueOf(col);
-                        toPrint.add(temp);
+                        addCoordinate(toPrint, row, col);
                         wordCheck++;
                     }
                     else{
@@ -575,15 +558,13 @@ public class WordSearch{
                             comparison++;
                             if (matrix[row][col].equals(getLetter(words, i, 0))){
                                 diff = false;
-                                String temp = String.valueOf(row) + "," + String.valueOf(col);
-                                toPrint.add(temp);
+                                addCoordinate(toPrint, row, col);
                                 wordCheck++;
                             }
                         }
                     }
                     if (wordCheck == words.get(i).length){
-                        printMatrix(matrix, toPrint, comparison);
-                        toDelete.add(i);
+                        updateProgress(toPrint, finalPrint, finalComparison, toDelete, i, comparison);
                         j = 0;
                         break;
                     }
@@ -639,19 +620,22 @@ public class WordSearch{
             }
             br.close();
             String[][] matrix = tempMatrix.stream().map(u -> u.toArray(new String[0])).toArray(String[][]::new);
+            ArrayList<ArrayList<String>> finalPrint = new ArrayList<ArrayList<String>>();
+            ArrayList<Integer> finalComparison = new ArrayList<Integer>();
             int searchWords = words.size();
             long startTime = System.nanoTime();
-            searchUp(matrix, words);
-            searchDown(matrix, words);
-            searchLeft(matrix, words);
-            searchRight(matrix, words);
-            searchDiagUpLeft(matrix, words);
-            searchDiagUpRight(matrix, words);
-            searchDiagDownLeft(matrix, words);
-            searchDiagDownRight(matrix, words);
+            searchUp(matrix, words, finalPrint, finalComparison);
+            searchDown(matrix, words, finalPrint, finalComparison);
+            searchLeft(matrix, words, finalPrint, finalComparison);
+            searchRight(matrix, words, finalPrint, finalComparison);
+            searchDiagUpLeft(matrix, words, finalPrint, finalComparison);
+            searchDiagUpRight(matrix, words, finalPrint, finalComparison);
+            searchDiagDownLeft(matrix, words, finalPrint, finalComparison);
+            searchDiagDownRight(matrix, words, finalPrint, finalComparison);
             long endTime = System.nanoTime();
             long totalTime = endTime - startTime;
             double elapsedTimeInSecond = (double) totalTime / 1_000_000_000;
+            printMatrix(matrix, finalPrint, finalComparison);
             System.out.println("Matrix size: " + matrix.length + " x " + matrix[0].length);
             System.out.println("Elapsed Time: " + elapsedTimeInSecond + " second(s)");
             if (words.size() == 0){
